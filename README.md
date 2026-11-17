@@ -58,13 +58,19 @@ meter = Meter()
 meter.record("acme", "api_calls", 1_200, datetime(2025, 1, 10))
 meter.record("acme", "seats", 5, datetime(2025, 1, 1))
 
-plan = PricePlan(name="Growth", currency="USD", models={
-    "api_calls": TieredPricing([
-        Tier(up_to=1_000, unit_price="0.001"),  # graduated
-        Tier(up_to=None, unit_price="0.0005"),
-    ]),
-    "seats": FlatPricing("8.00"),
-})
+plan = PricePlan(
+    name="Growth",
+    currency="USD",
+    models={
+        "api_calls": TieredPricing(
+            [
+                Tier(up_to=1_000, unit_price="0.001"),  # graduated
+                Tier(up_to=None, unit_price="0.0005"),
+            ]
+        ),
+        "seats": FlatPricing("8.00"),
+    },
+)
 
 invoice = build_invoice(meter, plan, "acme", datetime(2025, 1, 1), datetime(2025, 2, 1))
 for item in invoice.line_items:
